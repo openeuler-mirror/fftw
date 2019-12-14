@@ -1,4 +1,4 @@
-thout openmpi
+%bcond_without openmpi
 %bcond_without mpich
 
 %if %{with mpich}
