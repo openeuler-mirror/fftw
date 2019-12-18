@@ -220,10 +220,10 @@ mkdir single double long quad
 %ifarch x86_64
     cd single
     siarch="--enable-single --enable-sse2 --enable-avx"
-    build_section siarch
+    build_section $siarch
     cd ../double
     diarch="--enable-double --enable-sse2 --enable-avx"
-    build_section diarch
+    build_section $diarch
 %else
     cd single
     build_section --enable-single
@@ -247,10 +247,10 @@ do
     %ifarch x86_64
         cd ${mpi}-single
         msiarch="--enable-single --enable-sse2 --enable-avx"
-        mpi_build_section msiarch
+        mpi_build_section $msiarch
         cd ../${mpi}-double
         mdiarch="--enable-double --enable-sse2 --enable-avx"
-        mpi_build_section mdiarch
+        mpi_build_section $mdiarch
     %else
         cd ${mpi}-single
         mpi_build_section --enable-single
@@ -278,7 +278,7 @@ source /etc/profile.d/modules.sh
 %make_install -C long
 
 %if %{quad}
-    %make_install -C $quad
+    %make_install -C quad
 %endif
 
 %global delete_la  find $RPM_BUILD_ROOT -type f -name "*.la" -delete
