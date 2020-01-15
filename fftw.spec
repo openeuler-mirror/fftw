@@ -1,5 +1,5 @@
-%bcond_without openmpi
-%bcond_without mpich
+%bcond_with openmpi
+%bcond_with mpich
 
 %if %{with mpich}
 %global mpi_list %{?mpi_list} mpich
@@ -10,7 +10,7 @@
 
 Name:             fftw
 Version:          3.3.8
-Release:          5
+Release:          6
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
@@ -194,7 +194,9 @@ This package includes help documentation and manuals related to %{name}
 %autosetup -p1
 
 %build
+%if %{with mpich} || %{with openmpi}
 source /etc/profile.d/modules.sh
+%endif
 autoreconf -vfi
 export F77=gfortran
 
@@ -240,6 +242,7 @@ build_section --enable-long-double
 %endif
 cd ..
 
+%if %{with mpich} || %{with openmpi}
 for mpi in %{mpi_list}
 do
         module load mpi/${mpi}-%{_arch}
@@ -263,6 +266,7 @@ do
     cd ..
     module unload mpi/${mpi}-%{_arch}
 done
+%endif
 
 %install
 function install_section()
@@ -271,7 +275,9 @@ function install_section()
     find %{buildroot}%{_libdir}/${mpi}/lib -name libfftw\* -a \! -name \*_mpi.\* -delete
     rm -r %{buildroot}%{_libdir}/${mpi}/{bin,share}
 }
+%if %{with mpich} || %{with openmpi}
 source /etc/profile.d/modules.sh
+%endif
 
 %make_install -C single
 %make_install -C double
@@ -283,6 +289,7 @@ source /etc/profile.d/modules.sh
 
 %global delete_la  find $RPM_BUILD_ROOT -type f -name "*.la" -delete
 
+%if %{with mpich} || %{with openmpi}
 for mpi in %{mpi_list}
 do
     module load mpi/${mpi}-%{_arch}
@@ -291,12 +298,15 @@ do
     install_section long
     module unload mpi/${mpi}-%{_arch}
 done
+%endif
 
 rm -f %{buildroot}%{_infodir}/dir
 %delete_la
 
 %check
+%if %{with mpich} || %{with openmpi}
 source /etc/profile.d/modules.sh
+%endif
 mydir=`pwd`
 
 export LD_LIBRARY_PATH=$mydir/single/.libs:$mydir/single/threads/.libs
@@ -311,6 +321,7 @@ make %{?_smp_mflags} -C long check
     make %{?_smp_mflags} -C quad check
 %endif
 
+%if %{with mpich} || %{with openmpi}
 for mpi in %{mpi_list}
 do
     module load mpi/${mpi}-%{_arch}
@@ -321,6 +332,7 @@ do
     make %{?_smp_mflags} -C ${mpi}-long/mpi check
     module unload mpi/${mpi}-%{_arch}
 done
+%endif
 
 %post libs-single -p /sbin/ldconfig
 %postun libs-single -p /sbin/ldconfig
@@ -443,6 +455,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 15 2020 zhangrui <zhangrui182@huawei.com> - 3.3.8-6
+- fix selfbuild fail
+
 * Thu Dec 19 2019 zhujunhao <zhujunhao5@huawei.com> - 3.3.8-5
 - Modify for x86 build fail
 
