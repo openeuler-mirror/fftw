@@ -1,5 +1,5 @@
-%bcond_without openmpi
-%bcond_without mpich
+%bcond_with openmpi
+%bcond_with mpich
 
 %if %{with mpich}
 %global mpi_list %{?mpi_list} mpich
@@ -10,7 +10,7 @@
 
 Name:             fftw
 Version:          3.3.8
-Release:          5
+Release:          6
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
@@ -443,6 +443,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 15 2020 zhangrui <zhangrui182@huawei.com> - 3.3.8-6
+- fix selfbuild fail
+
 * Thu Dec 19 2019 zhujunhao <zhujunhao5@huawei.com> - 3.3.8-5
 - Modify for x86 build fail
 
