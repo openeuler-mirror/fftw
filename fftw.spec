@@ -19,9 +19,9 @@ BuildRequires:    gcc-gfortran autoconf automake libtool time perl-interpreter
 
 %global quad 0
 # disable quad-precision compile tempoary
-#%ifarch x86_64
-#%global quad 1
-#%endif
+%ifarch x86_64
+%global quad 0
+%endif
 
 %if %{with mpich}
 BuildRequires:    mpich-devel nss-myhostname
