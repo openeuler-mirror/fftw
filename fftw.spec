@@ -18,9 +18,10 @@ Source0:          http://www.fftw.org/fftw-%{version}.tar.gz
 BuildRequires:    gcc-gfortran autoconf automake libtool time perl-interpreter
 
 %global quad 0
-%ifarch x86_64
-%global quad 1
-%endif
+# disable quad-precision compile tempoary
+#%ifarch x86_64
+#%global quad 1
+#%endif
 
 %if %{with mpich}
 BuildRequires:    mpich-devel nss-myhostname
