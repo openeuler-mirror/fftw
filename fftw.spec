@@ -10,7 +10,7 @@
 
 Name:             fftw
 Version:          3.3.8
-Release:          6
+Release:          7
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
@@ -456,6 +456,9 @@ fi
 %endif
 
 %changelog
+* Tue May 26 2020 Captain Wei <captain.a.wei@gmail.com> - 3.3.8-7
+- isable quad-precision compile tempoary
+
 * Wed Jan 15 2020 zhangrui <zhangrui182@huawei.com> - 3.3.8-6
 - fix selfbuild fail
 
