@@ -1,5 +1,6 @@
 %bcond_with openmpi
 %bcond_with mpich
+%define debug_package %{nil}
 
 %if %{with mpich}
 %global mpi_list %{?mpi_list} mpich
@@ -10,7 +11,7 @@
 
 Name:             fftw
 Version:          3.3.8
-Release:          7
+Release:          8
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
@@ -456,6 +457,9 @@ fi
 %endif
 
 %changelog
+* Fri Jan 7 2022 baizhonggui <baizhonggui@huawei.com> - 3.3.8-8
+- disable the unused debuginfo to fix build fail
+
 * Tue May 26 2020 Captain Wei <captain.a.wei@gmail.com> - 3.3.8-7
 - isable quad-precision compile tempoary
 
