@@ -11,7 +11,7 @@
 
 Name:             fftw
 Version:          3.3.8
-Release:          8
+Release:          9
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
@@ -305,6 +305,8 @@ done
 rm -f %{buildroot}%{_infodir}/dir
 %delete_la
 
+find %{buildroot} -type f -name '*.so*' -exec strip '{}' ';'
+
 %check
 %if %{with mpich} || %{with openmpi}
 source /etc/profile.d/modules.sh
@@ -359,6 +361,7 @@ fi
 
 %files
 %{_bindir}/fftw*-wisdom*
+%exclude /usr/lib/debug/usr/bin/fftw*-wisdom*
 
 %files libs
 
@@ -457,6 +460,9 @@ fi
 %endif
 
 %changelog
+* Fri Mar 4 2022 baizhonggui <baizhonggui@huawei.com> - 3.3.8-9
+- Strip the symbol table
+
 * Fri Jan 7 2022 baizhonggui <baizhonggui@huawei.com> - 3.3.8-8
 - disable the unused debuginfo to fix build fail
 
