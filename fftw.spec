@@ -1,3 +1,4 @@
+%define debug_package %{nil}
 %bcond_with openmpi
 %bcond_with mpich
 
@@ -10,7 +11,7 @@
 
 Name:             fftw
 Version:          3.3.8
-Release:          7
+Release:          8
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
@@ -358,8 +359,10 @@ fi
 
 %files
 %{_bindir}/fftw*-wisdom*
+%exclude /usr/lib/debug/usr/bin/fftw*-wisdom*
 
 %files libs
+%exclude /usr/lib/debug/usr/lib64/
 
 %files libs-single
 %license COPYING COPYRIGHT
@@ -456,6 +459,9 @@ fi
 %endif
 
 %changelog
+* Mon Mar 28 2022 baizhonggui <baizhonggui@huawei.com> - 3.3.8-8
+- fix build fail
+
 * Tue May 26 2020 Captain Wei <captain.a.wei@gmail.com> - 3.3.8-7
 - isable quad-precision compile tempoary
 
