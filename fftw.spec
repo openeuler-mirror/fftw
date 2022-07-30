@@ -11,12 +11,12 @@
 
 Name:             fftw
 Version:          3.3.8
-Release:          8
+Release:          9
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
 Source0:          http://www.fftw.org/fftw-%{version}.tar.gz
-BuildRequires:    gcc-gfortran autoconf automake libtool time perl-interpreter
+BuildRequires:    gcc-gfortran autoconf automake libtool time perl-interpreter gcc_secure make
 
 %global quad 0
 # disable quad-precision compile tempoary
@@ -305,6 +305,9 @@ done
 rm -f %{buildroot}%{_infodir}/dir
 %delete_la
 
+find %{buildroot} -type f -name '*.so*' -exec strip '{}' ';'
+find %{buildroot} -type f -name 'fftw*-wisdom*' -exec strip '{}' ';'
+
 %check
 %if %{with mpich} || %{with openmpi}
 source /etc/profile.d/modules.sh
@@ -459,6 +462,11 @@ fi
 %endif
 
 %changelog
+* Sat Jul 30 2022 yaoxin <yaoxin30@h-partners.com> - 3.3.8-9
+- Strip the symbol table
+- Fix self build fail
+- Strip the binary fftw*-wisdom* symbol
+
 * Mon Mar 28 2022 baizhonggui <baizhonggui@huawei.com> - 3.3.8-8
 - fix build fail
 
