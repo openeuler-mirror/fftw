@@ -11,11 +11,14 @@
 
 Name:             fftw
 Version:          3.3.8
-Release:          9
+Release:          10
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
 Source0:          http://www.fftw.org/fftw-%{version}.tar.gz
+%ifarch sw_64
+Patch1:           fftw-3.3.8-sw.patch
+%endif
 BuildRequires:    gcc-gfortran autoconf automake libtool time perl-interpreter gcc_secure make
 
 %global quad 0
@@ -462,6 +465,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 19 2022 wuzx<wuzx1226@qq.com> - 3.3.8-10
+- add sw64 patch
+
 * Sat Jul 30 2022 yaoxin <yaoxin30@h-partners.com> - 3.3.8-9
 - Strip the symbol table
 - Fix self build fail
