@@ -11,7 +11,7 @@
 
 Name:             fftw
 Version:          3.3.10
-Release:          1
+Release:          2
 Summary:          A C subroutine library for computing the discrete Fourier transform
 License:          GPLv2+
 URL:              http://www.fftw.org
@@ -200,12 +200,20 @@ This package includes help documentation and manuals related to %{name}
 source /etc/profile.d/modules.sh
 %endif
 autoreconf -vfi
+%if "%toolchain" == "clang"
+export F77=clang
+%else
 export F77=gfortran
+%endif
 
 function build_section()
 {
     ln -s ../configure .
+    %if "%toolchain" == "clang"
+    %configure --enable-shared --disable-dependency-tracking --enable-threads $1
+    %else
     %configure --enable-shared --disable-dependency-tracking --enable-threads --enable-openmp $1
+    %endif
     sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
     sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
     %make_build
@@ -215,8 +223,13 @@ function mpi_build_section()
 {
     ln -s ../configure .
     export CC=mpicc
+    %if "%toolchain" == "clang"
+    %configure --enable-shared --disable-dependency-tracking --enable-threads $1 --enable-mpi --libdir=%{_libdir}/$mpi/lib \
+    --bindir=%{_libdir}/$mpi/bin --sbindir=%{_libdir}/$mpi/sbin --includedir=%{_includedir}/$mpi-%{_arch} --mandir=%{_libdir}/$mpi/share/man
+    %else
     %configure --enable-shared --disable-dependency-tracking --enable-threads --enable-openmp $1 --enable-mpi --libdir=%{_libdir}/$mpi/lib \
     --bindir=%{_libdir}/$mpi/bin --sbindir=%{_libdir}/$mpi/sbin --includedir=%{_includedir}/$mpi-%{_arch} --mandir=%{_libdir}/$mpi/share/man
+    %endif
     %make_build
 }
 
@@ -362,31 +375,31 @@ fi
 
 %files
 %{_bindir}/fftw*-wisdom*
-%exclude /usr/lib/debug/usr/bin/fftw*-wisdom*
+%exclude /usr/bin/fftw*-wisdom*
 
 %files libs
-%exclude /usr/lib/debug/usr/lib64/
+%exclude /usr/lib64/
 
 %files libs-single
 %license COPYING COPYRIGHT
 %doc AUTHORS ChangeLog NEWS README* TODO
 %{_libdir}/libfftw3f.so.*
 %{_libdir}/libfftw3f_threads.so.*
-%{_libdir}/libfftw3f_omp.so.*
+# %{_libdir}/libfftw3f_omp.so.*
 
 %files libs-double
 %license COPYING COPYRIGHT
 %doc AUTHORS ChangeLog NEWS README* TODO
 %{_libdir}/libfftw3.so.*
 %{_libdir}/libfftw3_threads.so.*
-%{_libdir}/libfftw3_omp.so.*
+# %{_libdir}/libfftw3_omp.so.*
 
 %files libs-long
 %license COPYING COPYRIGHT
 %doc AUTHORS ChangeLog NEWS README* TODO
 %{_libdir}/libfftw3l.so.*
 %{_libdir}/libfftw3l_threads.so.*
-%{_libdir}/libfftw3l_omp.so.*
+# %{_libdir}/libfftw3l_omp.so.*
 
 %if %{quad}
 %files libs-quad
@@ -394,7 +407,7 @@ fi
 %doc AUTHORS ChangeLog NEWS README* TODO
 %{_libdir}/libfftw3q.so.*
 %{_libdir}/libfftw3q_threads.so.*
-%{_libdir}/libfftw3q_omp.so.*
+# %{_libdir}/libfftw3q_omp.so.*
 %endif
 
 %files devel
@@ -462,6 +475,9 @@ fi
 %endif
 
 %changelog
+* Wed May 10 2023 Xiaoya Huang <huangxiaoya@iscas.ac.cn> - 3.3.10-2
+- Fix CC compiler support, OpenMP error and %files path error
+
 * Thu Sep 15 2022 lutkunpeng <lutkunpeng@163.com> - 3.3.10-1
 - DESC: update to 3.3.10
 
